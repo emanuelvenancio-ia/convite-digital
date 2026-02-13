@@ -1,1 +1,303 @@
-<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Romantic Love Capsule</title>\n    <style>\n        body { color: #FF69B4; font-family: Arial, sans-serif; text-align: center; }\n        .countdown { font-size: 2em; margin: 20px; }\n        .gallery img { width: 200px; margin: 10px; }\n    </style>\n</head>\n<body>\n    <h1>Welcome to the Romantic Love Capsule</h1>\n    <div class=\"countdown\" id=\"countdown\">Countdown: 10:00</div>\n    <div class=\"gallery\">\n        <h2>Photo Gallery</h2>\n        <img src=\"image1.jpg\" alt=\"Love Image 1\">\n        <img src=\"image2.jpg\" alt=\"Love Image 2\">\n        <img src=\"image3.jpg\" alt=\"Love Image 3\">\n    </div>\n    <div>\n        <h2>Quiz Game</h2>\n        <button onclick=\"startQuiz()\">Start Quiz</button>\n    </div>\n    <div>\n        <h2>Heart-Catching Game</h2>\n        <button onclick=\"startGame()\">Play Game</button>\n    </div>\n    <script>\n        let countdown = 600; // 10 minutes in seconds\n        const countdownElement = document.getElementById('countdown');\n        setInterval(() => {\n            if (countdown <= 0) {\n                countdownElement.innerHTML = 'Time is up!';\n            } else {\n                const minutes = Math.floor(countdown / 60);\n                const seconds = countdown % 60;\n                countdownElement.innerHTML = `Countdown: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;\n                countdown--;\n            }\n        }, 1000);\n        function startQuiz() {\n            alert('Starting quiz...');\n            // Implement quiz logic\n        }\n        function startGame() {\n            alert('Starting heart-catching game...');\n            // Implement game logic\n        }\n    </script>\n</body>\n</html>\n
+<!DOCTYPE html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cápsula do Amor - Surpreenda quem você ama</title>
+  <!-- Fontes -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primaria: #e04f5f;
+      --secundaria: #fff0f5;
+      --texto: #333;
+      --cinza-claro: #f4f4f4;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Lato', sans-serif;
+      background-color: white;
+      color: var(--texto);
+      line-height: 1.6;
+    }
+    
+    /* --- HEADER --- */
+    .header {
+      background: linear-gradient(135deg, var(--secundaria) 0%, #ffe6e6 100%);
+      padding: 80px 20px;
+      text-align: center;
+    }
+    
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      color: var(--primaria);
+      margin-bottom: 15px;
+    }
+    
+    .subtitulo {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      color: #666;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    /* --- SECÇÃO DE ANTEVISÃO (SCREENSHOTS) --- */
+    .preview-section {
+      background: var(--cinza-claro);
+      padding: 60px 20px;
+      border-radius: 30px;
+      margin: 40px 0;
+      text-align: center;
+    }
+    
+    .preview-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: var(--primaria);
+    }
+    
+    /* Slider de Screenshots */
+    .slider-container {
+      position: relative;
+      max-width: 320px;
+      /* Tamanho de um telemóvel real */
+      margin: 0 auto;
+      border: 12px solid #333;
+      /* Moldura do telemóvel */
+      border-radius: 40px;
+      height: 600px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+    }
+    
+    .slides-wrapper {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+      height: 100%;
+    }
+    
+    .slide-item {
+      min-width: 100%;
+      height: 100%;
+      position: relative;
+    }
+    
+    .slide-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* Legendas das funcionalidades */
+    .descricoes-funcionalidades {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      text-align: left;
+    }
+    
+    .func-card {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .func-card h4 {
+      color: var(--primaria);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    /* --- BOTÕES DE NAVEGAÇÃO DO SLIDER --- */
+    .nav-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .dot {
+      width: 12px;
+      height: 12px;
+      background: #ccc;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    
+    .dot.active {
+      background: var(--primaria);
+    }
+    
+    /* --- PREÇO E BOTÃO --- */
+    .cta-section {
+      text-align: center;
+      margin: 60px 0;
+    }
+    
+    .preco-tag {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    
+    .valor {
+      font-size: 3.5rem;
+      font-weight: bold;
+      color: var(--primaria);
+      display: block;
+      margin-bottom: 25px;
+    }
+    
+    .btn-whatsapp {
+      display: inline-block;
+      background: #25D366;
+      color: white;
+      text-decoration: none;
+      padding: 22px 50px;
+      border-radius: 50px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+      transition: all 0.3s;
+    }
+    
+    .btn-whatsapp:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(37, 211, 102, 0.5);
+    }
+    
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .valor {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  
+  <section class="header">
+    <div class="container">
+      <h1>Cápsula do Amor Digital</h1>
+      <p class="subtitulo">Transforme a vossa história de amor num site exclusivo e interativo. O presente perfeito para aniversários, meses de namoro ou surpresas.</p>
+    </div>
+  </section>
+  
+  <div class="container">
+    
+    <!-- SECÇÃO DE ANTEVISÃO COM SLIDER -->
+    <div class="preview-section">
+      <h2 class="preview-title">Veja como será o seu site</h2>
+      
+      <div class="slider-container">
+        <div class="slides-wrapper" id="slidesWrapper">
+          <!-- SLIDE 1: Temporizador -->
+          <div class="slide-item">
+            <img src="/slide1.jpg" alt="Exemplo do Site">
+            <div style="position:absolute; bottom:20px; left:0; width:100%; background:rgba(224,79,95,0.9); color:white; padding:10px;">
+              Contagem em Tempo Real
+            </div>
+          </div>
+          <!-- SLIDE 2: Quiz -->
+          <div class="slide-item">
+            <img src="/slide2.jpg" alt="Exemplo do Jogo">
+            <div style="position:absolute; bottom:20px; left:0; width:100%; background:rgba(224,79,95,0.9); color:white; padding:10px;">
+              Jogos Interativos
+            </div>
+          </div>
+          <!-- SLIDE 3: Galeria -->
+          <div class="slide-item">
+            <img src="/slide3.jpg" alt="Exemplo da Galeria">
+            <div style="position:absolute; bottom:20px; left:0; width:100%; background:rgba(224,79,95,0.9); color:white; padding:10px;">
+              Álbum de Memórias
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="nav-buttons">
+        <div class="dot active" onclick="goToSlide(0)"></div>
+        <div class="dot" onclick="goToSlide(1)"></div>
+        <div class="dot" onclick="goToSlide(2)"></div>
+      </div>
+      
+      <div class="descricoes-funcionalidades">
+        <div class="func-card">
+          <h4><span>🎵</span> Música Automática</h4>
+          <p>O site começa com a vossa trilha sonora favorita assim que o presente é aberto.</p>
+        </div>
+        <div class="func-card">
+          <h4><span>🎮</span> Jogos do Casal</h4>
+          <p>Inclui um quiz personalizado e um mini-jogo para testar a vossa conexão.</p>
+        </div>
+        <div class="func-card">
+          <h4><span>📱</span> 100% Mobile</h4>
+          <p>Feito para ser visualizado no telemóvel, como uma aplicação dedicada ao casal.</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- CTA FINAL -->
+    <div class="cta-section">
+      <p class="preco-tag">Tenha o seu site personalizado por apenas:</p>
+      <span class="valor">5.000 Kz</span>
+      
+      <!-- COLOQUE SEU NÚMERO AQUI -->
+      <a href="https://wa.me/244931662987?text=Olá!%20Vi%20a%20Cápsula%20do%20Amor%20e%20gostava%20de%20personalizar%20uma!" class="btn-whatsapp">
+        QUERO ENCOMENDAR AGORA
+      </a>
+      
+      <p style="margin-top: 20px; color: #888; font-size: 0.9rem;">
+        ✨ Entrega super rápida em menos de 2h via WhatsApp.
+      </p>
+    </div>
+    
+  </div>
+  
+  <script>
+    // Lógica simples do Slider
+    let currentSlide = 0;
+    const wrapper = document.getElementById('slidesWrapper');
+    const dots = document.querySelectorAll('.dot');
+    
+    function goToSlide(n) {
+      currentSlide = n;
+      wrapper.style.transform = `translateX(-${n * 100}%)`;
+      
+      // Atualizar dots
+      dots.forEach((dot, index) => {
+      });
+    }
+    
+    // Auto play opcional
+    setInterval(() => {
+      currentSlide = (currentSlide + 1) % 3;
+      goToSlide(currentSlide);
+    }, 4000);
+  </script>
+</body>
+
+</html>
