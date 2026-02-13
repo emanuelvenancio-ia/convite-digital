@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nossa História de Amor</title>
+  <!-- Fontes Google -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+  
+  <style>
+    /* --- ESTILOS GERAIS --- */
+    :root {
+      --cor-fundo: #fff0f5;
+      --cor-destaque: #e04f5f;
+      --cor-texto: #4a4a4a;
+      --fonte-titulo: 'Playfair Display', serif;
+      --fonte-manuscrita: 'Dancing Script', cursive;
+      --fonte-corpo: 'Lato', sans-serif;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background-color: var(--cor-fundo);
+      color: var(--cor-texto);
+      font-family: var(--fonte-corpo);
+      text-align: center;
+      overflow-x: hidden;
+      line-height: 1.6;
+      padding-bottom: 80px;
+      /* Espaço para o player de música */
+    }
+    
+    /* --- OVERLAY DE ENTRADA --- */
+    #entrada-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #ffe6e6 0%, #fff0f5 100%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.8s ease;
+    }
+    
+    .botao-entrar {
+      margin-top: 25px;
+      padding: 15px 45px;
+      background: var(--cor-destaque);
+      color: white;
+      border: none;
+      font-family: var(--fonte-titulo);
+      font-size: 1.4rem;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(224, 79, 95, 0.4);
+      animation: pulso 2s infinite;
+    }
+    
+    @keyframes pulso {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(224, 79, 95, 0.7);
+      }
+      
+      70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 15px rgba(224, 79, 95, 0);
+      }
+      
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(224, 79, 95, 0);
+      }
+    }
+    
+    /* --- CONTEÚDO PRINCIPAL --- */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+    
+    h1 {
+      font-family: var(--fonte-titulo);
+      font-size: 3.2rem;
+      color: var(--cor-destaque);
+      margin: 30px 0 10px;
+      line-height: 1.1;
+    }
+    
+    h2 {
+      font-family: var(--fonte-titulo);
+      color: var(--cor-destaque);
+      margin-bottom: 25px;
+      margin-top: 60px;
+      font-size: 1.8rem;
+      position: relative;
+      display: inline-block;
+    }
+    
+    h2::after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 3px;
+      background: #ffcccc;
+      margin: 10px auto 0;
+      border-radius: 2px;
+    }
+    
+    /* --- TEMPORIZADOR --- */
+    .grid-tempo {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 30px 0;
+    }
+    
+    .caixa-tempo {
+      background: white;
+      padding: 15px 5px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+      border: 1px solid #fff;
+    }
+    
+    .num-tempo {
+      display: block;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--cor-destaque);
+      font-family: var(--fonte-titulo);
+    }
+    
+    .rotulo-tempo {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #999;
+    }
+    
+    /* --- SLIDESHOW --- */
+    .slideshow-container {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      margin: 20px 0;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      background: #eee;
+    }
+    
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+    
+    .slide.ativo {
+      opacity: 1;
+    }
+    
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* --- JOGOS --- */
+    .cartao-quiz {
+      background: white;
+      min-height: 220px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      position: relative;
+    }
+    
+    .cartao-quiz:active {
+      transform: scale(0.98);
+    }
+    
+    .btn-acao {
+      margin-top: 15px;
+      padding: 10px 25px;
+      background: #4a4a4a;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    
+    canvas {
+      background: #222;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      max-width: 100%;
+    }
+    
+    /* --- NOVAS SECÇÕES --- */
+    
+    /* 1. Gerador de Motivos */
+    .area-motivos {
+      background: white;
+      padding: 40px 20px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(224, 79, 95, 0.1);
+      margin-top: 20px;
+    }
+    
+    .texto-motivo {
+      font-family: var(--fonte-manuscrita);
+      font-size: 2rem;
+      color: var(--cor-destaque);
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    
+    /* 2. Promessa Final */
+    .promessa-final {
+      margin-top: 60px;
+      padding: 40px;
+      border: 2px dashed #ffcccc;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.5);
+    }
+    
+    .promessa-texto {
+      font-size: 1.1rem;
+      font-style: italic;
+      color: #666;
+    }
+    
+    /* --- PLAYER DE MÚSICA FIXO --- */
+    .music-bar {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 10px 20px;
+      border-radius: 50px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+      display: flex;
+      /* Flex para alinhar */
+      align-items: center;
+      gap: 15px;
+      z-index: 9990;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      width: max-content;
+      max-width: 90%;
+      transition: bottom 0.5s;
+    }
+    
+    .music-bar.escondido {
+      bottom: -100px;
+    }
+    
+    .btn-play-pause {
+      background: var(--cor-destaque);
+      color: white;
+      border: none;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    
+    .equalizer {
+      display: flex;
+      gap: 3px;
+      align-items: flex-end;
+      height: 15px;
+    }
+    
+    .bar {
+      width: 3px;
+      background: var(--cor-destaque);
+      height: 5px;
+      transition: height 0.2s;
+    }
+    
+    .tocando .bar {
+      animation: bounce 0.5s infinite alternate;
+    }
+    
+    .tocando .bar:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+    
+    .tocando .bar:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+    
+    @keyframes bounce {
+      0% {
+        height: 5px;
+      }
+      
+      100% {
+        height: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  
+  <!-- OVERLAY -->
+  <div id="entrada-overlay">
+    <div style="font-size: 5rem; color: var(--cor-destaque);">❤</div>
+    <h1 style="margin-top:0;">Emanuel & Elisabeth</h1>
+    <p>Tenho uma surpresa para ti...</p>
+    <button class="botao-entrar" onclick="entrarNoSite()">Abrir Presente</button>
+    <p style="margin-top:15px; font-size: 0.8rem; opacity: 0.7;">(Liga o som)</p>
+  </div>
+  
+  <div class="container" id="conteudo-principal">
+    
+    <!-- HERO -->
+    <h1>Emanuel & Elisabeth</h1>
+    <p style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; color: #888;">Juntos desde 12 Nov 2022</p>
+    
+    <!-- TEMPORIZADOR -->
+    <div class="grid-tempo">
+      <div class="caixa-tempo"><span class="num-tempo" id="anos">0</span><span class="rotulo-tempo">Anos</span></div>
+      <div class="caixa-tempo"><span class="num-tempo" id="meses">0</span><span class="rotulo-tempo">Meses</span></div>
+      <div class="caixa-tempo"><span class="num-tempo" id="dias">0</span><span class="rotulo-tempo">Dias</span></div>
+      <div class="caixa-tempo"><span class="num-tempo" id="horas">0</span><span class="rotulo-tempo">Hrs</span></div>
+      <div class="caixa-tempo"><span class="num-tempo" id="minutos">0</span><span class="rotulo-tempo">Min</span></div>
+      <div class="caixa-tempo"><span class="num-tempo" id="segundos">0</span><span class="rotulo-tempo">Seg</span></div>
+    </div>
+    
+    <!-- SLIDESHOW -->
+    <div class="slideshow-container" id="galeria"></div>
+    
+    <!-- MENSAGEM -->
+    <div style="margin: 40px 0; font-style: italic; font-size: 1.1rem; padding: 0 20px;">
+      "Cada segundo contado acima é um segundo que passei a amar-te mais. Obrigado por seres a minha melhor aventura."
+    </div>
+    
+    <hr style="border: 0; border-top: 1px solid #ffcccc; margin: 40px 0;">
+    
+    <!-- JOGO 1: QUIZ -->
+    <h2>Sabes tudo sobre nós?</h2>
+    <div class="cartao-quiz" id="cartao-quiz" onclick="virarCartao()">
+      <div id="conteudo-quiz">
+        <h3 id="pergunta-texto">...</h3>
+        <p style="font-size:0.8rem; color:#aaa; margin-top:10px;">(Toca para ver a resposta)</p>
+      </div>
+    </div>
+    <button class="btn-acao" onclick="proximaPergunta(event)">Próxima Pergunta ➜</button>
+    
+    <!-- JOGO 2: CHUVA DE AMOR -->
+    <h2>Apanha o meu Amor</h2>
+    <p style="font-size: 0.9rem; margin-bottom: 15px;">Arrasta o cesto para apanhar os corações!</p>
+    
+    <div id="area-jogo" style="display:none;">
+      <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:5px;">
+        <span>Pontos: <span id="pontuacao">0</span></span>
+        <span style="color:red">Perdidos: <span id="perdidos">0</span>/50</span>
+      </div>
+      <canvas id="gameCanvas" width="320" height="400"></canvas>
+    </div>
+    <button id="btn-start-game" class="btn-acao" style="background: var(--cor-destaque);" onclick="iniciarJogoCanvas()">Jogar Agora</button>
+    
+    <!-- NOVO: GERADOR DE MOTIVOS -->
+    <h2>Porque te Amo...</h2>
+    <div class="area-motivos">
+      <div class="texto-motivo" id="texto-motivo">
+        Clica no botão...
+      </div>
+      <button class="btn-acao" onclick="novoMotivo()">Ver Motivo ❤️</button>
+    </div>
+    
+    <!-- NOVO: PROMESSA FINAL -->
+    <div class="promessa-final">
+      <h3 style="font-family: var(--fonte-titulo); color: var(--cor-destaque); margin-bottom: 15px;">A Minha Promessa</h3>
+      <p class="promessa-texto">
+        Prometo amar-te nos dias de sol e segurar a tua mão nos dias de chuva. Prometo rir das tuas piadas (mesmo das más) e construir um futuro lindo ao teu lado.
+      </p>
+      <div style="margin-top: 20px; font-family: var(--fonte-manuscrita); font-size: 1.5rem;">
+        Para sempre, Emanuel.
+      </div>
+    </div>
+    
+    <p style="margin-top: 50px; font-size: 0.7rem; color: #ccc;">Feito com ❤️ | Cápsula do Amor <br /> <code>
+        @todos os diretos reservados | EmanuelVenâncio - 2026
+      </code></p>
+  </div>
+  
+  <!-- BARRA DE MÚSICA FIXA -->
+  <div class="music-bar escondido" id="barra-musica">
+    <button class="btn-play-pause" id="btn-control" onclick="alternarMusica()">▶</button>
+    <div class="equalizer" id="eq-anim">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+    <span style="font-size: 0.8rem; font-weight: bold;" id="status-musica">Nossa Música</span>
+  </div>
+  
+  <!-- API YOUTUBE (INVISÍVEL) -->
+  <div id="player-youtube"></div>
+  
+  <script>
+    /* ================================================================
+           CONFIGURAÇÕES - EDITE APENAS AQUI
+           ================================================================ */
+    const CONFIG = {
+      // Data do início do namoro (Ano-Mês-Dia)
+      dataInicio: "2025-01-14T00:00:00",
+      
+      // LINK DO YOUTUBE (Pode colar o link inteiro aqui, curto ou longo!)
+      youtubeLink: "https://youtu.be/BcqxLCWn-CE?si=-lzn5cDDeiM-kOaa",
+      
+      // Links das fotos
+      fotos: [
+        "/img/img1.jpg",
+        "/img/img2.jpg",
+        "/img/img3.jpg",
+        "/img/img4.jpg",
+        "/img/img5.jpg",
+        "/img/img6.jpg",
+        "/img/img7.jpg",
+        "/img/img8.jpg"
+      ],
+      
+      // Perguntas do Quiz
+      quiz: [
+        { p: "Onde foi o nosso primeiro beijo?", r: "No táxi!" },
+        { p: "Qual é a minha cor favorita?", r: "Verde" },
+        { p: "Quem é mais altista?", r: "Definitivamente tu! 😂" },
+        { p: "Quem é mais teimoso?", r: "Definitivamente tu! 😂" },
+        { p: "Qual é o destino da nossa viagem de sonho??", r: "África do Sul! 😂" },
+        { p: "Qual é a minha comida favorita?", r: "Funge! 🥺" }
+      ],
+      
+      // Lista de Motivos para amar (Novo)
+      motivos: [
+        "O teu sorriso ilumina o meu dia.",
+        "A forma como cuidas de mim.",
+        "O teu abraço é o meu lugar seguro.",
+        "Rimos das mesmas coisas estúpidas.",
+        "Fazes-me querer ser uma pessoa melhor."
+      ]
+    };
+    
+    /* ================================================================
+       LÓGICA DO SISTEMA (NÃO PRECISA MEXER)
+       ================================================================ */
+    
+    // 1. EXTRAÇÃO INTELIGENTE DO ID DO YOUTUBE
+    function extrairYoutubeID(url) {
+      var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+      var match = url.match(regExp);
+      return (match && match[7].length == 11) ? match[7] : false;
+    }
+    
+    // 2. LÓGICA DE ÁUDIO ROBUSTA
+    var player;
+    var estaTocando = false;
+    
+    // Injeta API do Youtube
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    
+    function onYouTubeIframeAPIReady() {
+      let videoId = extrairYoutubeID(CONFIG.youtubeLink);
+      if (!videoId) { console.error("Link Youtube inválido"); return; }
+      
+      player = new YT.Player('player-youtube', {
+        height: '0',
+        width: '0',
+        videoId: videoId,
+        playerVars: { 'playsinline': 1, 'loop': 1, 'playlist': videoId, 'controls': 0 },
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+    
+    function onPlayerReady(event) {
+      // Player pronto, aguarda clique do usuário
+      document.getElementById('status-musica').innerText = "Pronto para tocar";
+    }
+    
+    function onPlayerStateChange(event) {
+      const btn = document.getElementById('btn-control');
+      const eq = document.getElementById('eq-anim');
+      
+      if (event.data == YT.PlayerState.PLAYING) {
+        estaTocando = true;
+        btn.innerText = "⏸"; // Pause icon
+        eq.classList.add('tocando');
+        document.getElementById('status-musica').innerText = "A tocar...";
+      } else {
+        estaTocando = false;
+        btn.innerText = "▶"; // Play icon
+        eq.classList.remove('tocando');
+        if (event.data == YT.PlayerState.BUFFERING) {
+          document.getElementById('status-musica').innerText = "A carregar...";
+        } else {
+          document.getElementById('status-musica').innerText = "Pausa";
+        }
+      }
+    }
+    
+    function entrarNoSite() {
+      // 1. Esconder Overlay
+      const overlay = document.getElementById('entrada-overlay');
+      overlay.style.opacity = 0;
+      setTimeout(() => { overlay.style.display = 'none'; }, 800);
+      
+      // 2. Mostrar Conteúdo
+      document.getElementById('conteudo-principal').style.opacity = 1;
+      
+      // 3. Mostrar Barra de Música
+      document.getElementById('barra-musica').classList.remove('escondido');
+      
+      // 4. Tentar Tocar
+      if (player && player.playVideo) {
+        player.unMute();
+        player.setVolume(70);
+        player.playVideo();
+      } else {
+        // Se falhar o autoplay, o usuário tem o botão na barra
+        document.getElementById('status-musica').innerText = "Toque no Play";
+      }
+    }
+    
+    function alternarMusica() {
+      if (!player) return;
+      if (estaTocando) {
+        player.pauseVideo();
+      } else {
+        player.playVideo();
+      }
+    }
+    
+    // 3. TEMPORIZADOR
+    function atualizarTempo() {
+      const inicio = new Date(CONFIG.dataInicio);
+      const agora = new Date();
+      const diff = agora - inicio;
+      
+      const segundos = Math.floor((diff / 1000) % 60);
+      const minutos = Math.floor((diff / (1000 * 60)) % 60);
+      const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const diasTotal = Math.floor(diff / (1000 * 60 * 60 * 24));
+      
+      document.getElementById('anos').innerText = Math.floor(diasTotal / 365);
+      document.getElementById('meses').innerText = Math.floor((diasTotal % 365) / 30);
+      document.getElementById('dias').innerText = Math.floor((diasTotal % 365) % 30);
+      document.getElementById('horas').innerText = horas;
+      document.getElementById('minutos').innerText = minutos;
+      document.getElementById('segundos').innerText = segundos;
+    }
+    setInterval(atualizarTempo, 1000);
+    atualizarTempo();
+    
+    // 4. GALERIA
+    const galeria = document.getElementById('galeria');
+    CONFIG.fotos.forEach((src, i) => {
+      galeria.innerHTML += `<div class="slide ${i===0?'ativo':''}"><img src="${src}"></div>`;
+    });
+    let slideIdx = 0;
+    setInterval(() => {
+      let slides = document.querySelectorAll('.slide');
+      slides[slideIdx].classList.remove('ativo');
+      slideIdx = (slideIdx + 1) % slides.length;
+      slides[slideIdx].classList.add('ativo');
+    }, 3500);
+    
+    // 5. QUIZ
+    let quizIdx = 0;
+    let quizVirado = false;
+    const quizEl = document.getElementById('conteudo-quiz');
+    
+    function renderQuiz() {
+      quizVirado = false;
+      quizEl.innerHTML = `<h3 id="pergunta-texto">${CONFIG.quiz[quizIdx].p}</h3><p style="font-size:0.8rem; color:#aaa; margin-top:10px;">(Toca para ver a resposta)</p>`;
+      // Estilo normal
+      document.getElementById('cartao-quiz').style.background = "white";
+      document.getElementById('cartao-quiz').style.color = "#4a4a4a";
+    }
+    
+    function virarCartao() {
+      quizVirado = !quizVirado;
+      if (quizVirado) {
+        quizEl.innerHTML = `<h3>${CONFIG.quiz[quizIdx].r}</h3>`;
+        document.getElementById('cartao-quiz').style.background = "#e04f5f";
+        document.getElementById('cartao-quiz').style.color = "white";
+      } else {
+        renderQuiz();
+      }
+    }
+    
+    function proximaPergunta(e) {
+      e.stopPropagation();
+      quizIdx = (quizIdx + 1) % CONFIG.quiz.length;
+      renderQuiz();
+    }
+    renderQuiz();
+    
+    // 6. GERADOR DE MOTIVOS
+    function novoMotivo() {
+      const r = Math.floor(Math.random() * CONFIG.motivos.length);
+      document.getElementById('texto-motivo').innerText = CONFIG.motivos[r];
+    }
+    // Iniciar com o primeiro
+    novoMotivo();
+    
+    // 7. JOGO CANVAS (Corações)
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    let gameLoop, gameActive = false;
+    let cesto = { x: 135, y: 350, w: 50, h: 40 };
+    let coracoes = [],
+      score = 0,
+      missed = 0;
+    
+    function moverCesto(e) {
+      const rect = canvas.getBoundingClientRect();
+      let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      let relativeX = clientX - rect.left;
+      if (relativeX > 0 && relativeX < canvas.width) cesto.x = relativeX - cesto.w / 2;
+      if (e.touches) e.preventDefault();
+    }
+    canvas.addEventListener('mousemove', moverCesto);
+    canvas.addEventListener('touchmove', moverCesto, { passive: false });
+    
+    function iniciarJogoCanvas() {
+      document.getElementById('btn-start-game').style.display = 'none';
+      document.getElementById('area-jogo').style.display = 'block';
+      score = 0;
+      missed = 0;
+      coracoes = [];
+      gameActive = true;
+      document.getElementById('pontuacao').innerText = 0;
+      document.getElementById('perdidos').innerText = 0;
+      if (gameLoop) clearInterval(gameLoop);
+      gameLoop = setInterval(updateGame, 20);
+    }
+    
+    function updateGame() {
+      if (!gameActive) return;
+      ctx.fillStyle = '#222';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      if (Math.random() < 0.03) coracoes.push({ x: Math.random() * (canvas.width - 20), y: 0, s: 2 + Math.random() * 3 });
+      
+      ctx.font = "30px Arial";
+      ctx.fillText("🧺", cesto.x, cesto.y + 30);
+      
+      for (let i = 0; i < coracoes.length; i++) {
+        let c = coracoes[i];
+        c.y += c.s;
+        ctx.font = "20px Arial";
+        ctx.fillText("❤️", c.x, c.y);
+        
+        if (c.y > cesto.y && c.y < cesto.y + cesto.h && c.x > cesto.x - 50 && c.x < cesto.x + cesto.w) {
+          score++;
+          coracoes.splice(i, 1);
+          i--;
+          document.getElementById('pontuacao').innerText = score;
+        } else if (c.y > canvas.height) {
+          missed++;
+          coracoes.splice(i, 1);
+          i--;
+          document.getElementById('perdidos').innerText = missed;
+          if (missed >= 50) {
+            gameActive = false;
+            clearInterval(gameLoop);
+            alert("Fim de Jogo! Pontuação: " + score);
+            document.getElementById('btn-start-game').style.display = 'inline-block';
+          }
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>
