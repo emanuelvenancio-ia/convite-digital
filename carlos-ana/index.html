@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ana & Carlos | 20 de Junho de 2026</title>
+    
+    <!-- FONTES PREMIUM -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    
+    <!-- ÍCONES -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- 1. IMPORTAR A BIBLIOTECA PDF-LIB -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #FDFBF7;
+            --gold-gradient: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            --gold-text: #B38728;
+            --dark-text: #2C2C2C;
+            --soft-gray: #f8f8f8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-color); color: var(--dark-text); font-family: 'Montserrat', sans-serif; scroll-behavior: smooth; }
+
+        /* HEADER / HERO */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1950&q=80');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: white;
+        }
+
+        .hero h1 { font-family: 'Cinzel', serif; font-size: 3rem; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .hero p { font-family: 'Great Vibes', cursive; font-size: 2.2rem; margin-bottom: 10px; }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 80px 20px; text-align: center; }
+        .section-title { font-family: 'Cinzel', serif; font-size: 2rem; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 40px; }
+
+        /* GALERIA SLIDER */
+        .gallery-container { display: flex; overflow-x: auto; gap: 15px; padding: 20px; scrollbar-width: none; scroll-snap-type: x mandatory; }
+        .gallery-container::-webkit-scrollbar { display: none; }
+        .gallery-item { flex: 0 0 80%; height: 450px; border-radius: 20px; overflow: hidden; scroll-snap-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* PRESENTES & IBAN/EXPRESS */
+        .gift-card { background: white; border-radius: 30px; padding: 40px 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        .data-row { background: var(--soft-gray); padding: 15px; border-radius: 15px; margin: 15px 0; display: flex; justify-content: space-between; align-items: center; font-family: monospace; font-weight: bold; font-size: 0.95rem; position: relative; }
+        .copy-icon { color: var(--gold-text); cursor: pointer; padding: 5px; }
+        
+        .btn-comprovativo { display: inline-flex; align-items: center; gap: 10px; margin-top: 20px; color: #25D366; font-weight: 600; text-decoration: none; font-size: 0.9rem; border: 1px solid #25D366; padding: 10px 20px; border-radius: 50px; transition: 0.3s; }
+        .btn-comprovativo:hover { background: #25D366; color: white; }
+
+        /* MAPA INTEGRADO */
+        .map-wrapper { width: 100%; height: 350px; border-radius: 25px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin: 30px 0; border: 4px solid white; }
+        
+        /* CONTAGEM REGRESSIVA */
+        .timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 30px 0; }
+        .timer-item { background: white; padding: 15px 5px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.04); }
+        .timer-val { display: block; font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--gold-text); font-weight: bold; }
+        .timer-label { font-size: 0.6rem; text-transform: uppercase; color: #aaa; letter-spacing: 1px; }
+
+        /* RSVP MODAL */
+        .btn-main { background: var(--gold-gradient); color: white; padding: 18px 40px; border: none; border-radius: 50px; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 10px 20px rgba(179, 135, 40, 0.3); transition: 0.3s; display: inline-flex; justify-content: center; align-items: center; gap: 10px;}
+        .btn-main:disabled { opacity: 0.7; cursor: not-allowed; }
+        
+        #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: white; padding: 35px; border-radius: 30px; width: 100%; max-width: 450px; position: relative; text-align: center; }
+        input, select { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-family: inherit; }
+
+        /* PLAYER FLUTUANTE */
+        .music-player { position: fixed; top: 20px; right: 20px; z-index: 2000; background: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2); cursor: pointer; border: 2px solid var(--gold-text); }
+        .bar { width: 3px; height: 15px; background: var(--gold-text); margin: 0 2px; border-radius: 10px; }
+        .playing .bar { animation: bounce 0.6s infinite alternate; }
+        @keyframes bounce { from { height: 5px; } to { height: 20px; } }
+
+        /* FOOTER */
+        footer { background: #1a1a1a; color: white; padding: 60px 20px; text-align: center; }
+        .dev-tag { margin-top: 30px; font-size: 0.75rem; color: #666; }
+        .dev-tag a { color: var(--gold-text); text-decoration: none; font-weight: bold; }
+
+        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 10px 20px; border-radius: 10px; font-size: 0.8rem; display: none; z-index: 3000; }
+
+        /* Animação de Carregamento */
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .spin { animation: spin 1s linear infinite; }
+    </style>
+</head>
+<body>
+
+    <!-- OVERLAY INICIAL -->
+    <div id="entry-overlay" style="position:fixed; inset:0; background:var(--bg-color); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+        <h2 style="font-family:'Cinzel', serif; color:var(--gold-text); margin-bottom:10px;">Ana & Carlos</h2>
+        <p style="margin-bottom:30px; font-size:0.9rem;">Toque para abrir o convite</p>
+        <button onclick="startExperience()" class="btn-main">ABRIR</button>
+    </div>
+
+    <!-- PLAYER -->
+    <div class="music-player" id="player-ui" onclick="togglePlay()">
+        <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+    </div>
+    <div id="yt-player"></div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <p>Nós vamos casar</p>
+        <h1>Ana & Carlos</h1>
+        <div style="margin-top:20px; letter-spacing:4px; font-weight:300;">20 . JUNHO . 2026</div>
+    </section>
+
+    <!-- SOBRE -->
+    <section class="container">
+        <h2 class="section-title">O Nosso Amor</h2>
+        <p style="color:#666; font-style:italic; line-height:1.8;">
+            "Deste dia em diante, não caminharemos sozinhos. Que o nosso amor seja a luz que ilumina o nosso caminho e a fé a força que nos sustenta."
+        </p>
+    </section>
+
+    <!-- GALERIA PREMIUM -->
+    <section style="background: #fff; padding: 60px 0;">
+        <h2 class="section-title" style="text-align:center; display:block;">Momentos</h2>
+        <div class="gallery-container">
+            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80"></div>
+            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80"></div>
+            <div class="gallery-item"><img src="https://images.unsplash.com/photo-1522673607200-164883eeca48?auto=format&fit=crop&w=800&q=80"></div>
+        </div>
+    </section>
+
+    <!-- LOCALIZAÇÃO & MAPA INTEGRADO -->
+    <section class="container">
+        <h2 class="section-title">Onde e Quando</h2>
+        <p style="font-weight:bold; font-size:1.2rem;">Salão Nobre de Talatona</p>
+        <p style="color:#777; margin-bottom:20px;">Luanda, Angola | 15:30 Horas</p>
+
+        <div class="map-wrapper">
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15760.123456789!2d13.18!3d-8.92!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zOMKwNTUnMDAuMCJTIDEzwrAxMCcwMC4wIkU!5e0!3m2!1spt-PT!2sao!4v1234567890" 
+                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
+            </iframe>
+        </div>
+
+        <a href="https://www.google.com/maps/search/?api=1&query=Salao+Nobre+Talatona+Luanda" target="_blank" class="btn-main" style="background:#fff; color:var(--dark-text); border:1px solid #ddd; font-size:0.8rem; padding:12px 25px;">
+            <i data-lucide="navigation" size="16"></i> ABRIR NO GPS
+        </a>
+
+        <div class="timer-grid">
+            <div class="timer-item"><span class="timer-val" id="d">00</span><span class="timer-label">Dias</span></div>
+            <div class="timer-item"><span class="timer-val" id="h">00</span><span class="timer-label">Horas</span></div>
+            <div class="timer-item"><span class="timer-val" id="m">00</span><span class="timer-label">Min</span></div>
+            <div class="timer-item"><span class="timer-val" id="s">00</span><span class="timer-label">Seg</span></div>
+        </div>
+    </section>
+
+    <!-- LISTA DE PRESENTES -->
+    <section class="container" style="background: #fdfbf7;">
+        <h2 class="section-title">Presentear os Noivos</h2>
+        <div class="gift-card">
+            <p style="font-size:0.95rem; color:#666; line-height:1.6; margin-bottom:30px;">
+                "A vossa presença é o nosso maior presente. Mas, para quem desejar abençoar o nosso novo lar com um gesto carinhoso, disponibilizamos os dados abaixo."
+            </p>
+
+            <div style="text-align:left; margin-bottom:20px;">
+                <label style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:bold;">Transferência Bancária (IBAN)</label>
+                <div class="data-row" onclick="copyData('AO06 0040 0000 1234 5678 1012 3', 'IBAN')">
+                    <span>AO06 ... 1012 3</span>
+                    <i data-lucide="copy" class="copy-icon"></i>
+                </div>
+            </div>
+
+            <div style="text-align:left;">
+                <label style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:bold;">Multicaixa Express (Telemóvel)</label>
+                <div class="data-row" onclick="copyData('923000000', 'Número Express')">
+                    <span>923 000 000</span>
+                    <i data-lucide="copy" class="copy-icon"></i>
+                </div>
+            </div>
+
+            <p style="font-size:0.8rem; color:#aaa; margin:15px 0;">Titular: Ana Patrícia & Carlos Miguel</p>
+
+            <a href="https://wa.me/244931662987?text=Olá! Segue o comprovativo da nossa contribuição para o vosso casamento. ✨" target="_blank" class="btn-comprovativo">
+                <i data-lucide="file-check"></i> ENVIAR COMPROVATIVO
+            </a>
+        </div>
+    </section>
+
+    <!-- RSVP -->
+    <section style="padding:100px 20px; background:linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1000&q=80'); background-size:cover; text-align:center; color:white;">
+        <h2 class="section-title" style="-webkit-text-fill-color: white; background:none;">Confirmar Presença</h2>
+        <p style="margin-bottom:30px;">Confirme a sua presença e baixe o seu convite oficial!</p>
+        <button class="btn-main" onclick="openModal()">CONFIRMAR E BAIXAR CONVITE</button>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p style="font-family:'Great Vibes', cursive; font-size:1.8rem; color:var(--gold-text);">Ana & Carlos</p>
+        <p style="margin-top:10px; font-size:0.9rem; opacity:0.6;">20 de Junho de 2026</p>
+        
+        <div class="dev-tag">
+            CONVITE DIGITAL PREMIUM<br>
+            Desenvolvido por <a href="https://wa.me/244931662987" target="_blank">Emanuel Venâncio</a>
+        </div>
+    </footer>
+
+    <!-- MODAL RSVP ATUALIZADO (Novo Fluxo) -->
+    <div id="modal">
+        <div class="modal-content">
+            <h3 style="font-family:'Cinzel', serif; color:var(--gold-text);">Garantir Convite</h3>
+            <p style="font-size:0.8rem; color:#888; margin-bottom: 15px;">Preencha os dados para gerar o seu PDF e notificar os noivos.</p>
+            
+            <input type="text" id="rsvp-name" placeholder="Seu Nome Completo (Como sairá no convite)" required>
+            
+            <!-- Adicionado Email para Formspree e controlo -->
+            <input type="email" id="rsvp-email" placeholder="Seu E-mail" required>
+            
+            <select id="rsvp-side" required>
+                <option value="" disabled selected>Convidado de quem?</option>
+                <option value="Noiva (Ana)">Da Noiva (Ana)</option>
+                <option value="Noivo (Carlos)">Do Noivo (Carlos)</option>
+            </select>
+
+            <select id="rsvp-count">
+                <option value="1 Pessoa">Apenas Eu (1)</option>
+                <option value="2 Pessoas">Eu e Acompanhante (2)</option>
+            </select>
+
+            <button class="btn-main" id="btn-submit" style="width:100%; margin-top:10px;" onclick="processarRSVP()">
+                <i data-lucide="download"></i> GERAR CONVITE & CONFIRMAR
+            </button>
+            <p onclick="closeModal()" style="margin-top:20px; font-size:0.8rem; cursor:pointer; color:#aaa;">Cancelar</p>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Operação concluída!</div>
+
+    <script>
+        // --- 1. CONFIGURAÇÕES BASE ---
+        const CONFIG = {
+            date: "June 20, 2026 15:30:00",
+            whatsapp: "244931662987", 
+            videoID: "7S80z09vD_s",
+            
+            // 🚨 COLE O SEU LINK DO FORMSPREE AQUI 🚨
+            // Exemplo: "https://formspree.io/f/xyzaqqqq"
+            formspreeEndpoint: "COLE_AQUI_O_SEU_LINK_DO_FORMSPREE", 
+            
+            // Caminho para o PDF base (desenhado no Canva) na pasta do teu site
+            pdfBaseUrl: "convite-base.pdf" 
+        };
+
+        // --- LÓGICA DO FORMSPREE (E-MAIL) ---
+        async function enviarEmailFormspree(dados) {
+            if (CONFIG.formspreeEndpoint === "COLE_AQUI_O_SEU_LINK_DO_FORMSPREE") {
+                console.warn("Aviso: Formspree não configurado. Adiciona o endpoint no código para enviar emails.");
+                return true; // Retorna true para a demo não bloquear
+            }
+
+            try {
+                const resposta = await fetch(CONFIG.formspreeEndpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        Nome: dados.name,
+                        Email: dados.email,
+                        Convidado_De: dados.side,
+                        Acompanhantes: dados.count,
+                        Data_Confirmacao: new Date().toLocaleString()
+                    })
+                });
+                return resposta.ok;
+            } catch (erro) {
+                console.error("Erro ao enviar para Formspree:", erro);
+                return false;
+            }
+        }
+
+        // --- LÓGICA DO PDF (PDF-LIB) ---
+        async function gerarEDownloadPDF(nomeConvidado) {
+            const { PDFDocument, StandardFonts, rgb } = PDFLib;
+
+            let pdfDoc;
+            
+            try {
+                // 1. TENTA CARREGAR O TEU PDF DO CANVA
+                // NOTA: Para isto funcionar, o ficheiro 'convite-base.pdf' tem de estar na mesma pasta
+                const basePdfBytes = await fetch(CONFIG.pdfBaseUrl).then(res => res.arrayBuffer());
+                pdfDoc = await PDFDocument.load(basePdfBytes);
+            } catch (error) {
+                console.warn("PDF base não encontrado. A gerar um design de demonstração na hora...");
+                // FALLBACK DIDÁTICO: Se o ficheiro não for encontrado (ex: num teste local sem servidor),
+                // o JavaScript desenha um PDF básico só para não dar erro.
+                pdfDoc = await PDFDocument.create();
+                const page = pdfDoc.addPage([595, 842]); // Tamanho A4 vertical
+                
+                // Desenhar fundo
+                page.drawRectangle({ x: 0, y: 0, width: 595, height: 842, color: rgb(0.99, 0.98, 0.96) });
+                
+                const fontTitulo = await pdfDoc.embedFont(StandardFonts.TimesRomanBoldItalic);
+                page.drawText('Ana & Carlos', { x: 170, y: 650, size: 50, font: fontTitulo, color: rgb(0.7, 0.53, 0.15) });
+                page.drawText('Convidam para o seu casamento', { x: 200, y: 600, size: 14, color: rgb(0.3, 0.3, 0.3) });
+            }
+
+            // 2. INCORPORA UMA FONTE (Times Roman Italic fica elegante)
+            const fontNome = await pdfDoc.embedFont(StandardFonts.TimesRomanItalic);
+            
+            // 3. SELECIONA A PRIMEIRA PÁGINA DO PDF
+            const pages = pdfDoc.getPages();
+            const firstPage = pages[0];
+
+            // 4. DESENHA O NOME DO CONVIDADO
+            // 📍 ATENÇÃO EMANUEL: AQUI É ONDE VAIS AJUSTAR AS COORDENADAS (X e Y)!
+            // O eixo Y no PDF-lib começa no fundo (0 é em baixo, aumenta para cima).
+            firstPage.drawText(nomeConvidado, {
+                x: 150,           // Move para a Direita/Esquerda
+                y: 400,           // Move para Cima/Baixo
+                size: 32,         // Tamanho da letra
+                font: fontNome,   // Tipo de letra
+                color: rgb(0.70, 0.53, 0.15) // Cor RGB (Aqui é um tom dourado)
+            });
+
+            // 5. GUARDA O FICHEIRO E FORÇA O DOWNLOAD
+            const pdfBytes = await pdfDoc.save();
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            
+            // Nome do ficheiro baixado (ex: Convite_Joao_Silva.pdf)
+            const nomeFormatado = nomeConvidado.trim().replace(/\s+/g, '_');
+            link.download = `Convite_Casamento_${nomeFormatado}.pdf`;
+            
+            document.body.appendChild(link); // Necessário para Firefox
+            link.click();
+            document.body.removeChild(link); // Limpeza
+        }
+
+        // --- ORQUESTRAÇÃO PRINCIPAL (Quando o utilizador clica no botão) ---
+        async function processarRSVP() {
+            // Captura os dados
+            const dados = {
+                name: document.getElementById('rsvp-name').value,
+                email: document.getElementById('rsvp-email').value,
+                side: document.getElementById('rsvp-side').value,
+                count: document.getElementById('rsvp-count').value
+            };
+
+            // Validação simples
+            if(!dados.name || !dados.email || !dados.side) {
+                return alert("Por favor, preencha o Nome, Email e de quem é convidado.");
+            }
+
+            // UI: Muda o botão para "Carregando"
+            const btn = document.getElementById('btn-submit');
+            const textoOriginal = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader" class="spin"></i> A GERAR CONVITE...';
+            btn.disabled = true;
+
+            try {
+                // PASSO 1: Dispara o email via Formspree em background
+                console.log("A enviar para Formspree...");
+                await enviarEmailFormspree(dados);
+
+                // PASSO 2: Gera e faz download do PDF
+                console.log("A gerar PDF...");
+                await gerarEDownloadPDF(dados.name);
+
+                // PASSO 3: Redirecionar para o WhatsApp (Opcional, mas mantém a tua lógica antiga)
+                const msgWa = `*CONFIRMAÇÃO EFETUADA* ✅\n\n*Nome:* ${dados.name}\n*Lado:* ${dados.side}\n*Email:* ${dados.email}\n*Pessoas:* ${dados.count}\n\nJá fiz o download do meu convite. Mal posso esperar! ✨`;
+                
+                // Abre o WhatsApp e fecha o modal
+                setTimeout(() => {
+                    window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msgWa)}`, '_blank');
+                    closeModal();
+                    
+                    // Mostra mensagem de sucesso
+                    const toast = document.getElementById('toast');
+                    toast.innerText = "Convite descarregado com sucesso!";
+                    toast.style.background = "#25D366"; // Verde sucesso
+                    toast.style.display = 'block';
+                    setTimeout(() => toast.style.display = 'none', 4000);
+                }, 1000);
+
+            } catch (erro) {
+                alert("Ocorreu um erro ao processar. Tente novamente.");
+                console.error(erro);
+            } finally {
+                // Restaura o botão
+                btn.innerHTML = textoOriginal;
+                btn.disabled = false;
+                lucide.createIcons(); // Recria os ícones
+            }
+        }
+
+        // --- LÓGICA DA INTERFACE DE UTILIZADOR (Inalterada da tua versão) ---
+        var player;
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('yt-player', {
+                height: '0', width: '0', videoId: CONFIG.videoID,
+                playerVars: { 'autoplay': 0, 'loop': 1, 'playlist': CONFIG.videoID, 'controls': 0 }
+            });
+        }
+
+        function startExperience() {
+            document.getElementById('entry-overlay').style.display = 'none';
+            if(player && player.playVideo) {
+                player.playVideo();
+                document.getElementById('player-ui').classList.add('playing');
+            }
+        }
+
+        function togglePlay() {
+            const ui = document.getElementById('player-ui');
+            if(ui.classList.contains('playing')) {
+                player.pauseVideo();
+                ui.classList.remove('playing');
+            } else {
+                player.playVideo();
+                ui.classList.add('playing');
+            }
+        }
+
+        const targetDate = new Date(CONFIG.date).getTime();
+        setInterval(() => {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+            document.getElementById('d').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+            document.getElementById('h').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            document.getElementById('m').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('s').innerText = Math.floor((diff % (1000 * 60)) / 1000);
+        }, 1000);
+
+        function copyData(text, label) {
+            navigator.clipboard.writeText(text);
+            const toast = document.getElementById('toast');
+            toast.innerText = label + " copiado!";
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 2500);
+        }
+
+        function openModal() { document.getElementById('modal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>
+
+
